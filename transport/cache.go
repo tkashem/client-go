@@ -53,6 +53,7 @@ type tlsCacheKey struct {
 	dial               string
 	disableCompression bool
 	proxy              string
+	userAgent	       string
 }
 
 func (t tlsCacheKey) String() string {
@@ -60,7 +61,8 @@ func (t tlsCacheKey) String() string {
 	if len(t.keyData) > 0 {
 		keyText = "<redacted>"
 	}
-	return fmt.Sprintf("insecure:%v, caData:%#v, certData:%#v, keyData:%s, getCert: %s, serverName:%s, dial:%s disableCompression:%t, proxy: %s", t.insecure, t.caData, t.certData, keyText, t.getCert, t.serverName, t.dial, t.disableCompression, t.proxy)
+	return fmt.Sprintf("insecure:%v, caData:%#v, certData:%#v, keyData:%s, getCert: %s, serverName:%s, dial:%s disableCompression:%t, proxy: %s, user-agent:%s",
+		t.insecure, t.caData, t.certData, keyText, t.getCert, t.serverName, t.dial, t.disableCompression, t.proxy, t.userAgent)
 }
 
 func (c *tlsTransportCache) get(config *Config) (http.RoundTripper, error) {
@@ -137,6 +139,7 @@ func tlsConfigKey(c *Config) (tlsCacheKey, error) {
 		dial:               fmt.Sprintf("%p", c.Dial),
 		disableCompression: c.DisableCompression,
 		proxy:              fmt.Sprintf("%p", c.Proxy),
+		userAgent:			c.UserAgent,
 	}
 
 	if c.TLS.ReloadTLSFiles {
